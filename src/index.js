@@ -17,13 +17,15 @@ async function main() {
   const w = image.getWidth();
   const h = image.getHeight();
 
-  const pixelRBGs = new Array(100).fill(_defaultPixel);
+  let writeStream = fs.createWriteStream('output.txt');
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      pixelRBGs[y * w + x] = getPixelRgb(image, x, y);
+      const pixelData = getPixelRgb(image, x, y);
+      writeStream.write(pixelData.r + ',' + pixelData.g + ',' + pixelData.b + '\n');
     }
   }
-  console.log(pixelRBGs);
+  // console.log(pixelRBGs);
+  writeStream.end();
 }
 
 main();
