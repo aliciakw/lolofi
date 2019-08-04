@@ -6,7 +6,7 @@
   "scripts": {
     "babel-node": "babel-node --presets=env",
     "build": "./node_modules/.bin/babel src -d lib",
-    "start": "npm run build && node lib/index.js && cat output.txt"
+    "start": "npm run build && node lib/index.js && cat output.csv"
   },
   "author": "",
   "license": "ISC",

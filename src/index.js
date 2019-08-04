@@ -17,11 +17,13 @@ async function main() {
   const w = image.getWidth();
   const h = image.getHeight();
 
-  let writeStream = fs.createWriteStream('output.txt');
+  let writeStream = fs.createWriteStream('output.csv');
+  writeStream.write('id,r,g,b\n');
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       const pixelData = getPixelRgb(image, x, y);
-      writeStream.write(pixelData.r + ',' + pixelData.g + ',' + pixelData.b + '\n');
+      const id = y * w + x;
+      writeStream.write(id + ',' + pixelData.r + ',' + pixelData.g + ',' + pixelData.b + '\n');
     }
   }
   // console.log(pixelRBGs);
