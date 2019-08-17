@@ -7,7 +7,7 @@ const filename = 'test_sm.jpg'; //args[0];
 const _defaultPixel = { r: 0, g: 0, b: 0, a: 255 };
 
 function getPixelRgb(image, x, y) {
-  const hex = image.getPixelColor(x, x);
+  const hex = image.getPixelColor(x, y);
   return jimp.intToRGBA(hex);
 }
 
@@ -21,12 +21,12 @@ async function main() {
   writeStream.write('id,r,g,b\n');
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
+      console.log(x, y);
       const pixelData = getPixelRgb(image, x, y);
       const id = y * w + x;
       writeStream.write(id + ',' + pixelData.r + ',' + pixelData.g + ',' + pixelData.b + '\n');
     }
   }
-  // console.log(pixelRBGs);
   writeStream.end();
 }
 
