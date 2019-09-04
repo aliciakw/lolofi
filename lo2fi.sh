@@ -9,7 +9,7 @@ echo ......................................
 
 VIDEOFILE=$1
 NAMESPACE=$2
-FRAMES=3
+FRAMES=30
 interval=1
 
 echo $VIDEOFILE
@@ -17,16 +17,27 @@ echo $NAMESPACE
 
 echo "Outputting $FRAMES frames..."
 output_dir="data_out/$NAMESPACE"
+
+$(npm run build)
 $(mkdir -p $output_dir)
+$(mkdir -p "$output_dir/img")
+
 for ((i=1; i<=FRAMES; i++)); do
     minute=($i * $interval)
     timestamp="00:$minute:00"
-    output_filename="$output_dir/$minute.png"
-    output_filename_sm="$output_dir/$minute-sm.png"
-    echo "$timestamp --> $output_filename"
-    $(ffmpeg -ss $timestamp -i $VIDEOFILE -frames:v 1 $output_filename)
-    $(convert -resize 10x $output_filename $output_filename_sm)
-    $(rm $output_filename)
+    img_tmpfile="$output_dir/img/$minute.png"
+    img_tmpfile_sm="$output_dir/img/$minute-sm.png"
+    csv_filename="$output_dir/$minute.txt"
+    echo "$timestamp --> $img_tmpfile -> $csv_filename"
+    # 1. Extract frame as an image
+    $(ffmpeg -ss $timestamp -i $VIDEOFILE -frames:v 1 $img_tmpfile)
+    # 2. Resize to screen resolution
+    $(convert -resize 10x $img_tmpfile $img_tmpfile_sm)
+    # 3. Use JIMP to convert pixels to csv output
+    $(node lib/index.js $img_tmpfile_sm $csv_filename) 
+    # 4. Clean up
+    $(rm $img_tmpfile)
+    # $(rm $img_tmpfile_sm)
 done
 
 echo .....................................
